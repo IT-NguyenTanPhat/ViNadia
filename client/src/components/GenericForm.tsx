@@ -58,7 +58,7 @@ function GenericForm<T extends FormikValues>({ ...props }: Props<T>) {
                 error={
                   Boolean(touched[field.name]) && Boolean(errors[field.name])
                 }
-                helperText={touched[field.name] && errors[field.name]}
+                helperText={<>{touched[field.name] && errors[field.name]}</>}
                 sx={{ gridColumn: `span ${field.colspan ?? 4}` }}
               />
             ))}
