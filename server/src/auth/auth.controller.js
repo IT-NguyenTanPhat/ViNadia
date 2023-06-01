@@ -1,4 +1,4 @@
-import { UserModel } from '../user';
+import { UserModel } from '../user/index.js';
 import jwt from 'jsonwebtoken';
 
 export const AuthController = {

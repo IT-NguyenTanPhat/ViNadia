@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import { upload, verifyToken } from '../middlewares';
-import { PostController } from './post.controller';
+import { upload, verifyToken } from '../middlewares/index.js';
+import { PostController } from './post.controller.js';
 
 router.get('/', PostController.getFeedPosts);
 

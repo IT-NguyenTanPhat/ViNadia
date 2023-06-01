@@ -1,2 +1,2 @@
-export { upload } from './upload';
-export { verifyToken } from './verify';
+export { upload } from './upload.js';
+export { verifyToken } from './verify.js';

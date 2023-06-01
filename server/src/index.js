@@ -6,9 +6,9 @@ import cors from 'cors';
 import path from 'path';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
-import { AuthRoute } from './auth';
-import { UserRoute } from './user';
-import { PostRoute } from './post';
+import { AuthRoute } from './auth/index.js';
+import { UserRoute } from './user/index.js';
+import { PostRoute } from './post/index.js';
 
 const app = express();
 

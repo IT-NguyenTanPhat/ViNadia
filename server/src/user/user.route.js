@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const router = Router();
-import { verifyToken } from '../middlewares';
-import { UserController } from './user.controller';
+import { verifyToken } from '../middlewares/index.js';
+import { UserController } from './user.controller.js';
 
 router.use(verifyToken);
 

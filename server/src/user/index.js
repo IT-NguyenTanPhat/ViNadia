@@ -1,3 +1,3 @@
-export { UserModel } from './user.model';
-export { UserController } from './user.controller';
-export { UserRoute } from './user.route';
+export { UserModel } from './user.model.js';
+export { UserController } from './user.controller.js';
+export { UserRoute } from './user.route.js';

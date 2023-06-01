@@ -1,2 +1,2 @@
-export { AuthController } from './auth.controller';
-export { AuthRoute } from './auth.route';
+export { AuthController } from './auth.controller.js';
+export { AuthRoute } from './auth.route.js';
