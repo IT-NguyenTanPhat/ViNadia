@@ -23,10 +23,11 @@ import {
   Menu,
   Close,
   Person,
+  LogoutOutlined,
 } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
-import Theme from '../types/Theme';
+import ITheme from '../types/Theme';
 import FlexBox from './FlexBox';
 import { setMode } from '../app/App.slice';
 import { RootState } from '../state/store';
@@ -38,8 +39,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.AuthReducer.user);
   const isMobileScreens = useMediaQuery('(max-width: 1000px)');
-
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
 
   return (
     <FlexBox padding="1rem 6%" bgcolor={palette.background.alt}>
@@ -93,42 +93,38 @@ const Navbar = () => {
           )}
           <Help sx={{ fontSize: '25px' }} />
           {user ? (
-            <FormControl variant="standard">
-              <Select
+            <Select
+              value={user.name}
+              autoWidth
+              sx={{
+                backgroundColor: palette.neutral.light,
+                borderRadius: '0.5rem',
+                p: '0.25rem 1rem',
+              }}
+              input={<InputBase />}
+            >
+              <MenuItem
                 value={user.name}
-                autoWidth
-                sx={{
-                  backgroundColor: palette.neutral.light,
-                  borderRadius: '0.5rem',
-                  p: '0.25rem 1rem',
-                  '& .MuiSelect-select:focus': {
-                    backgroundColor: palette.neutral.light,
-                  },
-                }}
-                input={<InputBase />}
+                onClick={() => navigate(`/${user._id}`)}
               >
-                <MenuItem
-                  value={user.name}
-                  onClick={() => navigate(`/${user._id}`)}
-                >
-                  <Stack direction={'row'} spacing={1} alignItems={'center'}>
-                    <Avatar
-                      sx={{ width: 26, height: 26 }}
-                      src={`${user.avatar}`}
-                    />
-                    <Typography>{user.name}</Typography>
-                  </Stack>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    dispatch(setLogout());
-                    navigate('/auth/login');
-                  }}
-                >
-                  Log Out
-                </MenuItem>
-              </Select>
-            </FormControl>
+                <Stack direction={'row'} spacing={1} alignItems={'center'}>
+                  <Avatar
+                    sx={{ width: 26, height: 26 }}
+                    src={`${user.avatar}`}
+                  />
+                  <Typography>{user.name}</Typography>
+                </Stack>
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  dispatch(setLogout());
+                  navigate('/auth/login');
+                }}
+              >
+                <LogoutOutlined sx={{ mr: '0.5rem' }} />
+                Log Out
+              </MenuItem>
+            </Select>
           ) : (
             <Stack direction={'row'} spacing={1} alignItems={'center'}>
               <NavLink to={'/auth/register'} style={{ textDecoration: 'none' }}>

@@ -3,6 +3,8 @@ const router = Router();
 import { upload, verifyToken } from '../middlewares/index.js';
 import { PostController } from './post.controller.js';
 
+// PATH: /posts
+
 router.get('/', PostController.getFeedPosts);
 
 router.use(verifyToken);

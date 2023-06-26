@@ -12,6 +12,7 @@ import { PostRoute } from './post/index.js';
 
 const app = express();
 
+// SERVER CONFIG
 dotenv.config();
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
@@ -19,14 +20,15 @@ app.use(morgan('common'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
+// ROUTE CONFIG
 app.use('/auth', AuthRoute);
 app.use('/users', UserRoute);
 app.use('/posts', PostRoute);
 
 const port = process.env.PORT || 8080;
+// DB CONFIG
 mongoose
   .connect(process.env.MONGODB_URL)
   .then(() => {

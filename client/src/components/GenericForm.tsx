@@ -7,7 +7,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { Formik, FormikHelpers, FormikValues } from 'formik';
-import Theme from '../types/Theme';
+import ITheme from '../types/Theme';
 
 interface Props<T extends FormikValues> {
   onSubmit: (values: T, onSubmitProps: FormikHelpers<T>) => Promise<void>;
@@ -19,7 +19,7 @@ interface Props<T extends FormikValues> {
 
 function GenericForm<T extends FormikValues>({ ...props }: Props<T>) {
   const isMobileScreen = useMediaQuery('(max-width: 600px)');
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
 
   return (
     <Formik
@@ -49,6 +49,7 @@ function GenericForm<T extends FormikValues>({ ...props }: Props<T>) {
           >
             {props.fields.map((field) => (
               <TextField
+                key={field.name}
                 label={field.label}
                 type={field.type ?? 'text'}
                 onChange={handleChange}

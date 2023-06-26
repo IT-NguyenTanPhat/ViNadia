@@ -1,24 +1,32 @@
-import { Avatar, Box, IconButton, Typography, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  IconButton,
+  InputBase,
+  MenuItem,
+  Select,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import FlexBox from './FlexBox';
 import { useNavigate } from 'react-router-dom';
-import Theme from '../types/Theme';
-import { PersonAddOutlined, PersonRemoveOutlined } from '@mui/icons-material';
+import ITheme from '../types/Theme';
+import {
+  Block,
+  MoreVertOutlined,
+  PersonAddOutlined,
+  PersonRemoveOutlined,
+} from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../state/store';
+import { IUserHeading } from '../types/User';
 
-interface Props {
-  _id: string;
-  name: string;
-  subtitle?: string;
-  avatar?: string;
-}
-
-export default function FriendHeading(props: Props) {
+export default function UserHeading(props: IUserHeading) {
   const navigate = useNavigate();
   const { _id, name, subtitle, avatar } = props;
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
   const { token, user } = useSelector((state: RootState) => state.AuthReducer);
-  const isFriend = false;
+  const isFriend = true;
 
   const sendFriendRequest = async () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -46,7 +54,7 @@ export default function FriendHeading(props: Props) {
             fontWeight={500}
             sx={{
               '&:hover': {
-                color: palette.primary.light,
+                color: palette.primary.main,
                 cursor: 'pointer',
               },
             }}
@@ -59,16 +67,25 @@ export default function FriendHeading(props: Props) {
         </Box>
       </FlexBox>
 
-      <IconButton
-        onClick={sendFriendRequest}
-        sx={{ bgcolor: palette.primary.light, p: '0.6rem' }}
-      >
-        {isFriend ? (
-          <PersonRemoveOutlined sx={{ color: palette.primary.dark }} />
-        ) : (
+      {/* Menu */}
+      {!isFriend ? (
+        <IconButton
+          onClick={sendFriendRequest}
+          sx={{ bgcolor: palette.primary.light, p: '0.6rem' }}
+        >
           <PersonAddOutlined sx={{ color: palette.primary.dark }} />
-        )}
-      </IconButton>
+        </IconButton>
+      ) : (
+        <Select input={<InputBase />} IconComponent={MoreVertOutlined}>
+          <MenuItem>
+            <Block sx={{ mr: '0.5rem' }} />
+            Hide
+          </MenuItem>
+          <MenuItem>
+            <PersonRemoveOutlined sx={{ mr: '0.5rem' }} /> Unfriend
+          </MenuItem>
+        </Select>
+      )}
     </FlexBox>
   );
 }

@@ -1,20 +1,26 @@
 import { Box, Typography, useTheme } from '@mui/material';
 import WidgetWrapper from '../../components/WidgetWrapper';
-import Theme from '../../types/Theme';
+import ITheme from '../../types/Theme';
 import { useEffect, useState } from 'react';
-import User from '../../types/User';
-import FriendHeading from '../../components/FriendHeading';
+import { IUserHeading } from '../../types/User';
+import UserHeading from '../../components/UserHeading';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../state/store';
 
 export default function SuggestedFriendsWidget(props: { userId?: string }) {
-  const { palette }: Theme = useTheme();
-  const [friends, setFriends] = useState<User[]>([]);
+  const { palette }: ITheme = useTheme();
+  const [friends, setFriends] = useState<IUserHeading[]>([]);
   const { userId } = props;
+  const token = useSelector((state: RootState) => state.AuthReducer.token);
 
   const getSuggestedFriends = async () => {
     const API_URL = import.meta.env.VITE_API_URL;
 
     await fetch(`${API_URL}/users/${userId}/suggested-friends`, {
       method: 'GET',
+      headers: {
+        authorization: 'Bearer ' + token,
+      },
     })
       .then(async (response) => {
         if (!response.ok) throw await response.json();
@@ -32,6 +38,8 @@ export default function SuggestedFriendsWidget(props: { userId?: string }) {
     getSuggestedFriends();
   }, []);
 
+  if (friends.length == 0 || !userId) return null;
+
   return (
     <WidgetWrapper>
       <Typography
@@ -44,7 +52,7 @@ export default function SuggestedFriendsWidget(props: { userId?: string }) {
       </Typography>
       <Box>
         {friends.map((friend) => (
-          <FriendHeading key={friend._id} {...friend} />
+          <UserHeading key={friend._id} {...friend} />
         ))}
       </Box>
     </WidgetWrapper>

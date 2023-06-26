@@ -1,9 +1,10 @@
-import User from './User';
+import IUser from './User';
 
-export default interface Post {
+export default interface IPost {
   _id: string;
-  user: User;
+  user: IUser;
   description?: string;
   image?: string;
   comments: [];
+  likes: string[];
 }

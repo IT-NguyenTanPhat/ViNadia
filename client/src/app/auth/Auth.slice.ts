@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import User from '../../types/User';
+import IUser from '../../types/User';
 
 interface AuthState {
   token?: string;
-  user?: User
+  user?: IUser;
 }
 
 const initialState: AuthState = {};

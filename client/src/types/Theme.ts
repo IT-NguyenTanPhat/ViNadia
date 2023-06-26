@@ -5,7 +5,7 @@ type Font = {
   fontSize: number;
 };
 
-export default interface Theme {
+export default interface ITheme {
   palette: {
     mode: RootState['AppReducer']['mode'];
     primary: {

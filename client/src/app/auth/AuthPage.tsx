@@ -2,10 +2,10 @@ import { Box, Typography, useMediaQuery, useTheme } from '@mui/material';
 import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 import { useNavigate } from 'react-router-dom';
-import Theme from '../../types/Theme';
+import ITheme from '../../types/Theme';
 
 export default function Auth(props: { isLogin: boolean }) {
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
   const isMobileScreen = useMediaQuery('(max-width: 1000px)');
   const navigate = useNavigate();
 

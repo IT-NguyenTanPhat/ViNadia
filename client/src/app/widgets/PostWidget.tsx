@@ -14,7 +14,7 @@ import WidgetWrapper from '../../components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../state/store';
 import { useState } from 'react';
-import Theme from '../../types/Theme';
+import ITheme from '../../types/Theme';
 import Dropzone from 'react-dropzone';
 import {
   AttachFileOutlined,
@@ -25,7 +25,7 @@ import {
   MoreHorizOutlined,
   VideoLibraryOutlined,
 } from '@mui/icons-material';
-import { setLoading } from '../App.slice';
+import { setLoading, unShiftPost } from '../App.slice';
 
 type Post = {
   text: string;
@@ -36,7 +36,7 @@ export default function PostWidget() {
   const { user, token } = useSelector((state: RootState) => state.AuthReducer);
   const [post, setPost] = useState<Post>({ text: '' });
   const [isImage, setIsImage] = useState(false);
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
   const isMobileScreen = useMediaQuery('(max-width: 1000px)');
   const dispatch = useDispatch();
 
@@ -60,7 +60,12 @@ export default function PostWidget() {
         if (!response.ok) throw await response.json();
         return response.json();
       })
-      .then((data) => console.log(data))
+      .then((data) => {
+        // Clear post editor
+        setPost({ text: '' });
+        setIsImage(false);
+        dispatch(unShiftPost({ post: data })); // Update newfeed
+      })
       .catch((err) => console.log(err))
       .finally(() => dispatch(setLoading(false)));
   };
@@ -69,6 +74,7 @@ export default function PostWidget() {
     <WidgetWrapper mb="2rem">
       <FlexBox>
         <Avatar src={user.avatar} />
+        {/* Text editor */}
         <InputBase
           placeholder="What's on your mind..."
           value={post.text}
@@ -83,6 +89,7 @@ export default function PostWidget() {
         />
       </FlexBox>
 
+      {/* Image editor */}
       {isImage && (
         <Box
           border={`1px solid ${palette.neutral.medium}`}
@@ -116,6 +123,7 @@ export default function PostWidget() {
                     </FlexBox>
                   )}
                 </Box>
+                {/* Delete image button */}
                 {post.image && (
                   <IconButton
                     onClick={() => setPost({ ...post, image: undefined })}
@@ -130,15 +138,14 @@ export default function PostWidget() {
         </Box>
       )}
 
-
-
       <Divider sx={{ margin: '1.25rem 0' }} />
 
+      {/* Media selection */}
       <FlexBox>
         <FlexBox gap={'0.25rem'} onClick={() => setIsImage(!isImage)}>
           <ImageOutlined sx={{ color: palette.neutral.mediumMain }} />
           <Typography
-            color={palette.neutral.mediumMain}
+            color={isImage ? 'primary' : palette.neutral.mediumMain}
             sx={{
               '&:hover': { cursor: 'pointer', color: palette.neutral.medium },
             }}

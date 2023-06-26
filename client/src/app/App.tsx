@@ -39,7 +39,7 @@ function App() {
       <Toast />
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
+          <CssBaseline /> 
           <Routes>
             <Route index path="/" element={<HomePage />} />
             <Route path="/auth/login" element={<AuthPage isLogin />} />

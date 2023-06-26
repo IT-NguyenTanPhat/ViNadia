@@ -1,9 +1,11 @@
 import { PostModel } from './post.model.js';
 
 export const PostController = {
+  // POST /posts
   createPost: async (req, res) => {
     try {
-      const post = await PostModel.create({ ...req.body });
+      const image = req.file?.path?.replace('public', '');
+      const post = await PostModel.create({ ...req.body, image });
       res.status(201).json(post);
     } catch (error) {
       console.log(error);
@@ -11,6 +13,7 @@ export const PostController = {
     }
   },
 
+  // GET /posts
   getFeedPosts: async (req, res) => {
     try {
       const posts = await PostModel.find().populate('user').lean();
@@ -21,6 +24,7 @@ export const PostController = {
     }
   },
 
+  // GET /posts/:userId/posts
   getUserPosts: async (req, res) => {
     try {
       const posts = await PostModel.find({ user: req.params.userId })
@@ -32,27 +36,33 @@ export const PostController = {
     }
   },
 
+  // PATCH /posts/:id/like
   likePost: async (req, res) => {
     try {
       const { id } = req.params;
-      const { user } = req.body;
+      const { _id: userId } = req.user;
 
       const post = await PostModel.findById(id);
-      const isLiked = post.likes.get(user);
+      const isLiked = post.likes.includes(userId);
 
       if (!isLiked) {
-        post.likes.set(user, true);
+        post.likes.push(userId);
       } else {
-        post.likes.delete(user);
+        post.likes = post.likes.filter((like) => like != userId);
       }
+
+      console.log(post.likes);
 
       const updated = await PostModel.findByIdAndUpdate(
         id,
         { likes: post.likes },
         { new: true }
-      );
+      )
+        .populate('user')
+        .lean();
       res.status(200).json(updated);
     } catch (error) {
+      console.log('likePost: ' + error);
       res.status(500).json({ error: error.message });
     }
   },

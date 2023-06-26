@@ -6,7 +6,7 @@ export default function LoginSuggestionWidget() {
   return (
     <WidgetWrapper textAlign="center">
       <Typography variant="h5" fontWeight="bold">
-        Please, login to explore fully ViNadia's features.
+        Please, login to fully explore ViNadia's features.
       </Typography>
       <Box mt="2rem">
         <NavLink to="/auth/register">

@@ -1,10 +1,10 @@
 import { Link, Typography, useTheme } from '@mui/material';
 import FlexBox from '../../components/FlexBox';
 import WidgetWrapper from '../../components/WidgetWrapper';
-import Theme from '../../types/Theme';
+import ITheme from '../../types/Theme';
 
 export default function AdsWidget() {
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
   const { main, dark, medium } = palette.neutral;
 
   return (
@@ -13,7 +13,6 @@ export default function AdsWidget() {
         <Typography color={dark} variant="h5" fontWeight={500}>
           Sponsored
         </Typography>
-        <Typography color={medium}>Create ad</Typography>
       </FlexBox>
       <img
         style={{ borderRadius: '6px', marginBottom: '5px' }}

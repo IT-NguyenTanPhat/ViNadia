@@ -2,7 +2,7 @@ import WidgetWrapper from '../../components/WidgetWrapper';
 import FlexBox from '../../components/FlexBox';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Avatar, Box, Divider, Typography, useTheme } from '@mui/material';
-import Theme from '../../types/Theme';
+import ITheme from '../../types/Theme';
 import {
   EditOutlined,
   LinkedIn,
@@ -12,12 +12,20 @@ import {
   Visibility,
   WorkOutlineOutlined,
 } from '@mui/icons-material';
-import User from '../../types/User';
+import IUser from '../../types/User';
+import { styled } from '@mui/system';
 
-export default function UserWidget(props: { user: User }) {
+const FlexCenterBox = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  mb: '0.5rem',
+});
+
+export default function UserWidget(props: { user: IUser }) {
   const { user } = props;
   const navigate = useNavigate();
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
 
   if (!user) return null;
 
@@ -40,7 +48,7 @@ export default function UserWidget(props: { user: User }) {
               {user.name}
             </Typography>
             <Typography color={palette.neutral.medium}>
-              {user.friends?.length} friends
+              {user.friends.length} friends
             </Typography>
           </Box>
         </FlexBox>
@@ -57,28 +65,32 @@ export default function UserWidget(props: { user: User }) {
       <Divider />
 
       {/* SECOND ROW */}
-      <Box p={'1rem 0'}>
-        <Box display={'flex'} alignItems={'center'} gap={'1rem'} mb={'0.5rem'}>
-          <LocationOnOutlined
-            sx={{ color: palette.neutral.main }}
-            fontSize="large"
-          />
-          <Typography color={palette.neutral.medium}>
-            {user.location}
-          </Typography>
-        </Box>
-        <FlexBox gap={'1rem'}>
-          <WorkOutlineOutlined
-            sx={{ color: palette.neutral.main }}
-            fontSize="large"
-          />
-          <Typography color={palette.neutral.medium}>
-            {user.occupation}
-          </Typography>
-        </FlexBox>
-      </Box>
+      {(user.location || user.occupation) && (
+        <>
+          <Box p={'1rem 0'}>
+            <FlexCenterBox>
+              <LocationOnOutlined
+                sx={{ color: palette.neutral.main }}
+                fontSize="large"
+              />
+              <Typography color={palette.neutral.medium}>
+                {user.location}
+              </Typography>
+            </FlexCenterBox>
+            <FlexCenterBox>
+              <WorkOutlineOutlined
+                sx={{ color: palette.neutral.main }}
+                fontSize="large"
+              />
+              <Typography color={palette.neutral.medium}>
+                {user.occupation}
+              </Typography>
+            </FlexCenterBox>
+          </Box>
 
-      <Divider />
+          <Divider />
+        </>
+      )}
 
       {/* THIRD ROW */}
       <FlexBox p={'1rem 0'}>

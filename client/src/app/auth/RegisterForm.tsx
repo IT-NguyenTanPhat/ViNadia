@@ -3,7 +3,7 @@ import { FormikHelpers } from 'formik';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { object, ref, string } from 'yup';
-import  Theme  from '../../types/Theme';
+import ITheme from '../../types/Theme';
 import { setLoading } from '../App.slice';
 import GenericForm from '../../components/GenericForm';
 import { showToast } from '../toast/Toast.slice';
@@ -34,7 +34,7 @@ const initialValues: Input = {
 function RegisterForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { palette }: Theme = useTheme();
+  const { palette }: ITheme = useTheme();
 
   const handleSubmit = async (
     values: Input,

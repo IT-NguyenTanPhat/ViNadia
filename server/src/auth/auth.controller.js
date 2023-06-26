@@ -2,6 +2,7 @@ import { UserModel } from '../user/index.js';
 import jwt from 'jsonwebtoken';
 
 export const AuthController = {
+  // POST /auth/login
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
@@ -25,6 +26,7 @@ export const AuthController = {
     }
   },
 
+  // POST /auth/register
   register: async (req, res) => {
     try {
       const isExist = await UserModel.exists({ email: req.body.email });

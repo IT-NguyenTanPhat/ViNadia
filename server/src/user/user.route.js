@@ -3,10 +3,13 @@ const router = Router();
 import { verifyToken } from '../middlewares/index.js';
 import { UserController } from './user.controller.js';
 
-router.use(verifyToken);
+// PATH: /users
 
+router.use(verifyToken);
 router.get('/:id', UserController.getUser);
+
 router.get('/:id/friends', UserController.getUserFriends);
+router.get('/:id/suggested-friends', UserController.getSuggestedFriends);
 
 router.patch('/:id/:friendId', UserController.addRemoveFriend);
 

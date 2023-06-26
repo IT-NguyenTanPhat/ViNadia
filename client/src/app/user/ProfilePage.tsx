@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import UserWidget from '../widgets/UserWidget';
-import User from '../../types/User';
+import IUser from '../../types/User';
 import { useMediaQuery, Box } from '@mui/material';
 import LoginSuggestionWidget from '../widgets/LoginSuggestionWidget';
 import PostWidget from '../widgets/PostWidget';
 import { RootState } from '../../state/store';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFoundPage from '../errors/NotFoundPage';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { showToast } from '../toast/Toast.slice';
 import PostCard from '../../components/PostCard';
-import Post from '../../types/Post';
+import IPost from '../../types/Post';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<IUser>();
   const isMobileScreen = useMediaQuery('(max-width: 1000px)');
   const isLoggedIn = Boolean(
     useSelector((state: RootState) => state.AuthReducer.user)
@@ -22,33 +22,37 @@ export default function ProfilePage() {
   const { token } = useSelector((state: RootState) => state.AuthReducer);
   const { userId } = useParams();
   const dispatch = useDispatch();
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
 
   const getUser = async () => {
-    const API_URL = import.meta.env.VITE_API_URL;
-
     await fetch(`${API_URL}/users/${userId}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (response) => {
-        if (!response.ok) throw await response.json();
+        if (!response.ok) {
+          if (response.status === 403) return navigate('/auth/login');
+          throw await response.json();
+        }
         return response.json();
       })
       .then((data) => setUser(data))
-      .catch((err) => console.log(err));
+      .catch(() => dispatch(showToast({ message: 'Something went wrong' })));
   };
 
   const getUserPosts = async () => {
-    const API_URL = import.meta.env.VITE_API_URL;
-
     await fetch(`${API_URL}/posts/${userId}/posts`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (response) => {
-        if (!response.ok) throw await response.json();
+        if (!response.ok) {
+          if (response.status === 403) return navigate('/auth/login');
+          throw await response.json();
+        }
         return response.json();
       })
       .then((data) => {
@@ -62,6 +66,8 @@ export default function ProfilePage() {
     getUser();
     getUserPosts();
   }, []);
+
+  if (loading) return null;
 
   if (!user) return <NotFoundPage />;
 
@@ -78,6 +84,7 @@ export default function ProfilePage() {
         <Box flexBasis={isMobileScreen ? undefined : '26%'}>
           <UserWidget user={user} />
         </Box>
+        
         <Box
           flexBasis={isMobileScreen ? undefined : '42%'}
           mt={isMobileScreen ? '2rem' : undefined}
@@ -87,6 +94,7 @@ export default function ProfilePage() {
             <PostCard loading={loading} post={post} />
           ))}
         </Box>
+
         {!isLoggedIn && (
           <Box flexBasis={'26%'}>
             <LoginSuggestionWidget />

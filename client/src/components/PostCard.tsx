@@ -7,10 +7,10 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import Post from '../types/Post';
+import IPost from '../types/Post';
 import WidgetWrapper from './WidgetWrapper';
-import FriendHeading from './FriendHeading';
-import Theme from '../types/Theme';
+import UserHeading from './UserHeading';
+import ITheme from '../types/Theme';
 import FlexBox from './FlexBox';
 import {
   ChatBubbleOutlineOutlined,
@@ -19,16 +19,41 @@ import {
   ShareOutlined,
 } from '@mui/icons-material';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../state/store';
+import { useNavigate } from 'react-router-dom';
+import { showToast } from '../app/toast/Toast.slice';
+import { setPost } from '../app/App.slice';
 
-export default function PostCard(props: { post: Post; loading: boolean }) {
-  const { user, description, image, comments } = props.post;
-  const isLiked = true;
-  const likeCount = 10;
-  const { palette }: Theme = useTheme();
+export default function PostCard(props: { post: IPost; loading: boolean }) {
+  const { _id, user, description, image, comments, likes } = props.post;
+  const { token, user: authUser } = useSelector(
+    (state: RootState) => state.AuthReducer
+  );
+  const isLiked = (() => {
+    if (!authUser) return false;
+    return likes.includes(authUser._id);
+  })();
+  const { palette }: ITheme = useTheme();
   const [isComment, setIsComment] = useState(false);
+  const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const sendLikeRequest = () => {
-    return;
+  const sendLikeRequest = async () => {
+    await fetch(`${API_URL}/posts/${_id}/like`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 403) return navigate('/auth/login');
+          throw await response.json();
+        }
+        return response.json();
+      })
+      .then((data) => dispatch(setPost({ post: data })))
+      .catch(() => dispatch(showToast({ message: 'Something went wrong' })));
   };
 
   return (
@@ -53,13 +78,15 @@ export default function PostCard(props: { post: Post; loading: boolean }) {
         </>
       ) : (
         <>
-          <FriendHeading {...user} subtitle={user.location} />
+          <UserHeading {...user} subtitle={user.location} />
           <Typography color={palette.neutral.main} sx={{ mt: '1rem' }}>
             {description}
           </Typography>
+          
+          {/* Image section */}
           {image && (
             <img
-              src={image}
+              src={`${API_URL}/${image}`}
               alt="post"
               width="100%"
               height="auto"
@@ -67,6 +94,7 @@ export default function PostCard(props: { post: Post; loading: boolean }) {
             />
           )}
 
+          {/* Interactive section */}
           <FlexBox mt="0.25rem">
             <FlexBox gap="1rem">
               <FlexBox gap="0.3rem">
@@ -77,12 +105,18 @@ export default function PostCard(props: { post: Post; loading: boolean }) {
                     <FavoriteBorderOutlined />
                   )}
                 </IconButton>
-                <Typography>{likeCount}</Typography>
+                <Typography>{likes.length}</Typography>
               </FlexBox>
 
               <FlexBox gap="0.3rem">
                 <IconButton onClick={() => setIsComment(!isComment)}>
-                  <ChatBubbleOutlineOutlined />
+                  {isComment ? (
+                    <ChatBubbleOutlineOutlined
+                      sx={{ color: palette.primary.main }}
+                    />
+                  ) : (
+                    <ChatBubbleOutlineOutlined />
+                  )}
                 </IconButton>
                 <Typography>{comments.length}</Typography>
               </FlexBox>
@@ -96,6 +130,7 @@ export default function PostCard(props: { post: Post; loading: boolean }) {
             </FlexBox>
           </FlexBox>
 
+          {/* Comments display */}
           {isComment && (
             <Box mt="0.5rem">
               {comments.map((comment, i) => (

@@ -8,7 +8,7 @@ import PostCard from '../../components/PostCard';
 export default function NewFeed() {
   const dispatch = useDispatch();
   const posts = useSelector((state: RootState) => state.AppReducer.posts);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const getFeedPosts = async () => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -26,7 +26,6 @@ export default function NewFeed() {
   };
 
   useEffect(() => {
-    setLoading(true);
     getFeedPosts();
   }, []);
 
