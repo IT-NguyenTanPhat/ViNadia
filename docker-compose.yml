@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - data:/data/db
+
+  server:
+    build: ./server
+    ports:
+      - 80:80
+    volumes:
+      - logs:/app/logs
+      - ./server:/app
+    depends_on:
+      - mongodb
+
+  client:
+    build: ./client
+    ports:
+      - 3000:3000
+    volumes:
+      - ./client:/app
+    depends_on:
+      - server
+volumes:
+  data:
+  logs:
