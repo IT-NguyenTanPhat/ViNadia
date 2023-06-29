@@ -23,7 +23,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 // ROUTE CONFIG
-app.use('/auth', AuthRoute);
+app.use('/authen', AuthRoute);
 app.use('/users', UserRoute);
 app.use('/posts', PostRoute);
 
