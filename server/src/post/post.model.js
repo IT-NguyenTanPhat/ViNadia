@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const PostSchema = new Schema(
   {
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     image: String,
     description: String,
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],

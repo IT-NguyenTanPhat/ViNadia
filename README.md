@@ -6,7 +6,7 @@ ViNadia is a social media webapp that people can connect and share great memorie
 
 ### Front-end
 
-- React + Typescipt + Vite
+- React + TypeScript + Vite
 - MUI
 - Redux
 
@@ -20,3 +20,7 @@ ViNadia is a social media webapp that people can connect and share great memorie
 ### Database
 
 - MongoDB
+
+## API Docs
+
+https://documenter.getpostman.com/view/20826890/2s93zB6hTd

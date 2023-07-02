@@ -2,7 +2,7 @@ import IUser from './User';
 
 export default interface IPost {
   _id: string;
-  user: IUser;
+  author: IUser;
   description?: string;
   image?: string;
   comments: [];

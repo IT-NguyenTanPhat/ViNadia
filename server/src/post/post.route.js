@@ -10,7 +10,6 @@ router.get('/', PostController.getFeedPosts);
 router.use(verifyToken);
 
 router.post('/', upload.single('post'), PostController.createPost);
-router.get('/:userId/posts', PostController.getUserPosts);
 router.patch('/:id/like', PostController.likePost);
 
 export { router as PostRoute };

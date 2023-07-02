@@ -5,22 +5,23 @@ const UserSchema = new Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     avatar: { type: String, default: '' },
-    friends: { type: [Schema.Types.ObjectId], ref: 'User' },
     location: String,
     occupation: String,
-    viewedProfile: Number,
-    impressions: Number,
+    friends: { type: [Schema.Types.ObjectId], ref: 'User', default: [] },
+    friendRequests: {
+      type: [
+        {
+          sender: { type: Schema.Types.ObjectId, ref: 'User' },
+          time: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
   },
   {
     timestamps: true,
-    methods: {
-      comparePassword: async function (password) {
-        console.log(password, this.password);
-        return await bcrypt.compare(password, this.password);
-      },
-    },
   }
 );
 

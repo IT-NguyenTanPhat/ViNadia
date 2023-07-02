@@ -8,7 +8,7 @@ export const PostController = {
       const post = await PostModel.create({ ...req.body, image });
       res.status(201).json(post);
     } catch (error) {
-      console.log(error);
+      console.log(`createPost: ${error}`);
       res.status(409).json({ error: error.message });
     }
   },
@@ -16,22 +16,15 @@ export const PostController = {
   // GET /posts
   getFeedPosts: async (req, res) => {
     try {
-      const posts = await PostModel.find().populate('user').lean();
-      res.status(200).json(posts);
-    } catch (error) {
-      console.log(error);
-      res.status(404).json({ error: error.message });
-    }
-  },
-
-  // GET /posts/:userId/posts
-  getUserPosts: async (req, res) => {
-    try {
-      const posts = await PostModel.find({ user: req.params.userId })
-        .populate('user')
+      const posts = await PostModel.find()
+        .populate({
+          path: 'author',
+          select: 'name avatar',
+        })
         .lean();
       res.status(200).json(posts);
     } catch (error) {
+      console.log(`getFeedPosts: ${error}`);
       res.status(404).json({ error: error.message });
     }
   },
@@ -51,18 +44,19 @@ export const PostController = {
         post.likes = post.likes.filter((like) => like != userId);
       }
 
-      console.log(post.likes);
-
       const updated = await PostModel.findByIdAndUpdate(
         id,
         { likes: post.likes },
         { new: true }
       )
-        .populate('user')
+        .populate({
+          path: 'author',
+          select: 'name avatar',
+        })
         .lean();
       res.status(200).json(updated);
     } catch (error) {
-      console.log('likePost: ' + error);
+      console.log(`likePost: ${error}`);
       res.status(500).json({ error: error.message });
     }
   },

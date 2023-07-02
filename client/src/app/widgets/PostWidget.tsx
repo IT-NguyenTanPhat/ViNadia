@@ -45,7 +45,7 @@ export default function PostWidget() {
   const handlePost = async () => {
     dispatch(setLoading(true));
     const formData = new FormData();
-    formData.append('user', user._id);
+    formData.append('author', user._id);
     formData.append('description', post.text);
     if (post.image) formData.append('post', post.image);
 

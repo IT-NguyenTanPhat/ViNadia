@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url';
 import { AuthRoute } from './auth/index.js';
 import { UserRoute } from './user/index.js';
 import { PostRoute } from './post/index.js';
+import { FriendRoute } from './friend/index.js';
 
 const app = express();
 
@@ -20,12 +21,15 @@ app.use(morgan('common'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-app.use(express.static('public'));
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // ROUTE CONFIG
-app.use('/authen', AuthRoute);
+app.use('/auth', AuthRoute);
 app.use('/users', UserRoute);
 app.use('/posts', PostRoute);
+app.use('/friends', FriendRoute);
 
 const port = process.env.PORT || 8080;
 // DB CONFIG

@@ -6,7 +6,8 @@ export default interface IUser {
   avatar?: string;
   viewedProfile?: number;
   impressions?: number;
-  friends: [];
+  friends: string[];
+  friendRequests: string[];
 }
 
 export interface IUserHeading {

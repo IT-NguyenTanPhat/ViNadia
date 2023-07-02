@@ -37,7 +37,7 @@ export default function HomePage() {
           <Box flexBasis={'26%'}>
             <AdsWidget />
             <Box m="2rem 0" />
-            <SuggestedFriendsWidget userId={user?._id} />
+            <SuggestedFriendsWidget />
           </Box>
         )}
       </Box>

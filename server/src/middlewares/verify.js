@@ -17,6 +17,7 @@ export const verifyToken = (req, res, next) => {
     req.user = verified;
     next();
   } catch (error) {
+    console.log(`verifyToken: ${error}`);
     res.status(403).json({ message: 'Invalid token' });
   }
 };

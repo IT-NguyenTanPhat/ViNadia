@@ -9,7 +9,6 @@ import {
   LocationOnOutlined,
   ManageAccountsOutlined,
   Twitter,
-  Visibility,
   WorkOutlineOutlined,
 } from '@mui/icons-material';
 import IUser from '../../types/User';
@@ -22,8 +21,8 @@ const FlexCenterBox = styled(Box)({
   mb: '0.5rem',
 });
 
-export default function UserWidget(props: { user: IUser }) {
-  const { user } = props;
+export default function UserWidget(props: { user: IUser; isOwner?: boolean }) {
+  const { user, isOwner } = props;
   const navigate = useNavigate();
   const { palette }: ITheme = useTheme();
 
@@ -52,14 +51,16 @@ export default function UserWidget(props: { user: IUser }) {
             </Typography>
           </Box>
         </FlexBox>
-        <NavLink to={`/${user._id}`}>
-          <ManageAccountsOutlined
-            sx={{
-              color: palette.neutral.main,
-              '&:hover': { opacity: 0.7 },
-            }}
-          />
-        </NavLink>
+        {isOwner && (
+          <NavLink to={`#`}>
+            <ManageAccountsOutlined
+              sx={{
+                color: palette.neutral.main,
+                '&:hover': { opacity: 0.7 },
+              }}
+            />
+          </NavLink>
+        )}
       </FlexBox>
 
       <Divider />
@@ -93,21 +94,6 @@ export default function UserWidget(props: { user: IUser }) {
       )}
 
       {/* THIRD ROW */}
-      <FlexBox p={'1rem 0'}>
-        <Typography color={palette.neutral.medium}>
-          Who's viewed your profile
-        </Typography>
-        <FlexBox gap={'0.25rem'}>
-          <Typography color={palette.neutral.main} fontWeight={500}>
-            {user.viewedProfile}
-          </Typography>
-          <Visibility sx={{ color: palette.neutral.main }} />
-        </FlexBox>
-      </FlexBox>
-
-      <Divider />
-
-      {/* FOURTH ROW */}
       <Box p={'1rem 0'}>
         <Typography
           fontSize={'1rem'}
@@ -129,7 +115,6 @@ export default function UserWidget(props: { user: IUser }) {
               </Typography>
             </Box>
           </FlexBox>
-          <EditOutlined sx={{ color: palette.neutral.main }} />
         </FlexBox>
 
         <FlexBox gap="1rem" mb="0.5rem">
@@ -144,7 +129,7 @@ export default function UserWidget(props: { user: IUser }) {
               </Typography>
             </Box>
           </FlexBox>
-          <EditOutlined sx={{ color: palette.neutral.main }} />
+          {isOwner && <EditOutlined sx={{ color: palette.neutral.main }} />}
         </FlexBox>
       </Box>
     </WidgetWrapper>

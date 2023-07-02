@@ -1,64 +1,61 @@
 import { UserModel } from './user.model.js';
+import { PostModel } from '../post/index.js';
+import { isFriend } from '../friend/friend.controller.js';
 
 export const UserController = {
   // GET /users/:id
   getUser: async (req, res) => {
     try {
-      const user = await UserModel.findById(req.params.id);
+      const user = await UserModel.findById(req.params.id, '-password');
       res.status(200).json(user);
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: error.message });
+      console.log(`getUser: ${error}`);
+      res.status(404).json({ error: error.message });
     }
   },
 
-  // GET /users/:id/friends
-  getUserFriends: async (req, res) => {
+  // GET /users/:id/posts
+  getUserPosts: async (req, res) => {
     try {
-      const user = await UserModel.findById(req.params.id);
-      res.status(200).json(user.friends);
+      const posts = await PostModel.find({ author: req.params.id })
+        .populate({
+          path: 'author',
+          select: 'name avatar',
+        })
+        .lean();
+      res.status(200).json(posts);
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.log(`getUserPosts: ${error}`);
+      res.status(404).json({ error: error.message });
     }
   },
 
   // GET /users/:id/suggested-friends
   getSuggestedFriends: async (req, res) => {
     try {
-      const user = await UserModel.findById(req.params.id);
-      const users = await UserModel.find({
-        _id: { $ne: req.user._id },
-        $or: [
-          { location: { $regex: user.location, $options: 'i' } },
-          { occupation: { $regex: user.occupation, $options: 'i' } },
-        ],
-      });
-      res.status(200).json(users);
+      const user = await UserModel.findById(req.params.id, '-password');
+      let friends = await UserModel.find(
+        {
+          _id: { $ne: req.user._id },
+          $or: [
+            { location: { $regex: user.location, $options: 'i' } },
+            { occupation: { $regex: user.occupation, $options: 'i' } },
+          ],
+        },
+        'name avatar'
+      );
+
+      friends = await Promise.all(friends.map(async (friend) => {
+        const check = await isFriend(user._id, friend._id);
+        return !check ? friend : false;
+      }));
+      
+      friends = friends.filter(Boolean);
+
+      res.status(200).json(friends);
     } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
-
-  // PATCH /users/:id/:friendId
-  addRemoveFriend: async (req, res) => {
-    try {
-      const { id, friendId } = req.params;
-      const user = await UserModel.findById(id);
-      const friend = await UserModel.findById(friendId);
-
-      if (user.friends.includes(friend)) {
-        user.friends = user.friends.filter((id) => friendId !== id);
-        friend.friends = friend.friends.filter((id) => id !== id);
-      } else {
-        user.friends.push(friendId);
-        friend.friends.push(id);
-      }
-      await user.save();
-      await friend.save();
-
-      res.status(200).json({ message: 'Success' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.log(`getSuggestedFriends: ${error}`);
+      res.status(404).json({ error: error.message });
     }
   },
 };

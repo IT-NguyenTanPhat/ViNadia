@@ -1,5 +1,6 @@
 import { UserModel } from '../user/index.js';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 export const AuthController = {
   // POST /auth/login
@@ -7,19 +8,22 @@ export const AuthController = {
     try {
       const { email, password } = req.body;
 
-      const user = await UserModel.findOne({ email });
+      const user = await UserModel.findOne(
+        { email },
+        '-__v -createdAt -updatedAt'
+      );
       if (!user)
         return res.status(400).json({ message: 'Invalid email or password.' });
 
-      const isMatch = await user.comparePassword(password);
+      const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch)
         return res.status(400).json({ message: 'Invalid email or password.' });
 
       const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-      delete user.password;
+      user.password = undefined;
       res.status(200).json({ user, token });
     } catch (error) {
-      console.error(error);
+      console.log(`login: ${error}`);
       res
         .status(500)
         .json({ message: 'Something went wrong. Please, try later!' });
@@ -32,14 +36,11 @@ export const AuthController = {
       const isExist = await UserModel.exists({ email: req.body.email });
       if (isExist)
         return res.status(400).json({ message: 'Email is already existed.' });
-      const user = await UserModel.create({
-        ...req.body,
-        viewedProfile: Math.floor(Math.random() * 10000),
-        impressions: Math.floor(Math.random() * 10000),
-      });
+      const user = await UserModel.create({ ...req.body });
+      user.password = undefined;
       res.status(201).json(user);
     } catch (error) {
-      console.error(error);
+      console.log(`register: ${error}`);
       res
         .status(500)
         .json({ message: 'Something went wrong. Please, try later!' });

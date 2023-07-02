@@ -7,16 +7,15 @@ import UserHeading from '../../components/UserHeading';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../state/store';
 
-export default function SuggestedFriendsWidget(props: { userId?: string }) {
+export default function SuggestedFriendsWidget() {
   const { palette }: ITheme = useTheme();
   const [friends, setFriends] = useState<IUserHeading[]>([]);
-  const { userId } = props;
-  const token = useSelector((state: RootState) => state.AuthReducer.token);
+  const { token, user } = useSelector((state: RootState) => state.AuthReducer);
 
   const getSuggestedFriends = async () => {
     const API_URL = import.meta.env.VITE_API_URL;
 
-    await fetch(`${API_URL}/users/${userId}/suggested-friends`, {
+    await fetch(`${API_URL}/users/${user?._id}/suggested-friends`, {
       method: 'GET',
       headers: {
         authorization: 'Bearer ' + token,
@@ -38,7 +37,7 @@ export default function SuggestedFriendsWidget(props: { userId?: string }) {
     getSuggestedFriends();
   }, []);
 
-  if (friends.length == 0 || !userId) return null;
+  if (friends.length == 0 || !user) return null;
 
   return (
     <WidgetWrapper>

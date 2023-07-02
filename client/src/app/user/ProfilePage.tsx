@@ -16,10 +16,9 @@ import IPost from '../../types/Post';
 export default function ProfilePage() {
   const [user, setUser] = useState<IUser>();
   const isMobileScreen = useMediaQuery('(max-width: 1000px)');
-  const isLoggedIn = Boolean(
-    useSelector((state: RootState) => state.AuthReducer.user)
+  const { token, user: authUser } = useSelector(
+    (state: RootState) => state.AuthReducer
   );
-  const { token } = useSelector((state: RootState) => state.AuthReducer);
   const { userId } = useParams();
   const dispatch = useDispatch();
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -44,7 +43,7 @@ export default function ProfilePage() {
   };
 
   const getUserPosts = async () => {
-    await fetch(`${API_URL}/posts/${userId}/posts`, {
+    await fetch(`${API_URL}/users/${userId}/posts`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -84,18 +83,18 @@ export default function ProfilePage() {
         <Box flexBasis={isMobileScreen ? undefined : '26%'}>
           <UserWidget user={user} />
         </Box>
-        
+
         <Box
           flexBasis={isMobileScreen ? undefined : '42%'}
           mt={isMobileScreen ? '2rem' : undefined}
         >
-          <PostWidget />
+          {authUser?._id === user._id && <PostWidget />}
           {posts.map((post) => (
             <PostCard loading={loading} post={post} />
           ))}
         </Box>
 
-        {!isLoggedIn && (
+        {!authUser && (
           <Box flexBasis={'26%'}>
             <LoginSuggestionWidget />
           </Box>

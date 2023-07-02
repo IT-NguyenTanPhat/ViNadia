@@ -26,19 +26,18 @@ import { showToast } from '../app/toast/Toast.slice';
 import { setPost } from '../app/App.slice';
 
 export default function PostCard(props: { post: IPost; loading: boolean }) {
-  const { _id, user, description, image, comments, likes } = props.post;
-  const { token, user: authUser } = useSelector(
-    (state: RootState) => state.AuthReducer
-  );
-  const isLiked = (() => {
-    if (!authUser) return false;
-    return likes.includes(authUser._id);
-  })();
-  const { palette }: ITheme = useTheme();
-  const [isComment, setIsComment] = useState(false);
   const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { _id, author, description, image, comments, likes } = props.post;
+  const { token, user } = useSelector((state: RootState) => state.AuthReducer);
+  const { palette }: ITheme = useTheme();
+  const [isComment, setIsComment] = useState(false);
+
+  const isLiked = (() => {
+    if (!user) return false;
+    if (user._id === _id) return likes.includes(user._id);
+  })();
 
   const sendLikeRequest = async () => {
     await fetch(`${API_URL}/posts/${_id}/like`, {
@@ -78,11 +77,11 @@ export default function PostCard(props: { post: IPost; loading: boolean }) {
         </>
       ) : (
         <>
-          <UserHeading {...user} subtitle={user.location} />
+          <UserHeading {...author} subtitle={author.location} />
           <Typography color={palette.neutral.main} sx={{ mt: '1rem' }}>
             {description}
           </Typography>
-          
+
           {/* Image section */}
           {image && (
             <img
