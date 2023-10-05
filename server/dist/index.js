@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.redis = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-const app_1 = __importDefault(require("./app/app"));
+const app_1 = __importDefault(require("./app"));
 const http_1 = require("http");
 const socket_io_1 = require("socket.io");
 const redis_1 = require("redis");

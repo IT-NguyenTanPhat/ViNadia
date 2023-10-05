@@ -9,7 +9,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
-const app_route_1 = __importDefault(require("../app/app.route"));
+const app_route_1 = __importDefault(require("./app/app.route"));
 const app = (0, express_1.default)();
 // SERVER CONFIG
 dotenv_1.default.config();
@@ -19,7 +19,7 @@ app.use((0, morgan_1.default)('common'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());
-app.use(express_1.default.static(path_1.default.join(__dirname, '../../public')));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../public')));
 // ROUTES
 app.use(app_route_1.default);
 // Global error handling

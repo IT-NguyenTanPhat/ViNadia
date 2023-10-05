@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import app from './app/app';
+import app from './app';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { createClient } from 'redis';
