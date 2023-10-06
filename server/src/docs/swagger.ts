@@ -1,10 +1,21 @@
 export default {
   openapi: '3.1.0',
   info: {
-    title: 'Vinadia API',
+    title: 'Express API for Stock Screener',
     version: '1.0.0',
-    description: 'API documentation for a social media webapp',
+    description:
+      'This is a REST API application made with Express. It retrieves data from Stock Screener.',
+    license: {
+      name: 'Licensed Under MIT',
+      url: 'https://spdx.org/licenses/MIT.html',
+    },
   },
+  servers: [
+    {
+      url: `http://localhost:${process.env.PORT || 8080}`,
+      description: 'Development',
+    },
+  ],
   paths: {
     '/api/users': {
       get: {
