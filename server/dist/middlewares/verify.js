@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const user_1 = require("../user");
+const models_1 = require("../models");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let token = req.header('Authorization');
@@ -27,7 +27,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const verified = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'vinadia_access_token');
         if (typeof verified === 'string')
             throw new Error();
-        const isExisted = yield user_1.UserModel.exists({ _id: verified['_id'] });
+        const isExisted = yield models_1.UserModel.exists({ _id: verified['_id'] });
         if (!isExisted)
             throw new Error();
         next();

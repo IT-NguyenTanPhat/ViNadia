@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_route_1 = __importDefault(require("./auth.route"));
+const friendship_route_1 = __importDefault(require("./friendship.route"));
+const post_route_1 = __importDefault(require("./post.route"));
+const user_route_1 = __importDefault(require("./user.route"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const docs_1 = __importDefault(require("../docs"));
+const router = (0, express_1.Router)();
+router.get('/', (req, res) => res.redirect('/api-docs'));
+router.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(docs_1.default, { explorer: true }));
+router.use('/auth', auth_route_1.default);
+router.use('/users', user_route_1.default);
+router.use('/posts', post_route_1.default);
+router.use('/friendships', friendship_route_1.default);
+exports.default = router;

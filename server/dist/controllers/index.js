@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserController = exports.PostController = exports.FriendshipController = exports.AuthController = void 0;
+var auth_controller_1 = require("./auth.controller");
+Object.defineProperty(exports, "AuthController", { enumerable: true, get: function () { return auth_controller_1.AuthController; } });
+var friendship_controller_1 = require("./friendship.controller");
+Object.defineProperty(exports, "FriendshipController", { enumerable: true, get: function () { return friendship_controller_1.FriendshipController; } });
+var post_controller_1 = require("./post.controller");
+Object.defineProperty(exports, "PostController", { enumerable: true, get: function () { return post_controller_1.PostController; } });
+var user_controller_1 = require("./user.controller");
+Object.defineProperty(exports, "UserController", { enumerable: true, get: function () { return user_controller_1.UserController; } });
