@@ -8,7 +8,7 @@ import {
   getUserFriendsValidator,
 } from '../validators/friendship.validator';
 
-// PATH: /friends
+// PATH: /friendships
 
 router.use(verifyToken);
 

@@ -25,7 +25,7 @@ export const PostController = {
     res.status(200).json({ posts });
   }),
 
-  // PATCH /posts/:id/like
+  // PATCH /posts/:postId/like
   likeOrDislikePost: catchAsync(async (req: Request, res: Response) => {
     const { postId } = req.params;
     const { userId } = req.body;

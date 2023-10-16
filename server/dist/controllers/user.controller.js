@@ -18,7 +18,7 @@ const controllers_1 = require("../controllers");
 const middlewares_1 = require("../middlewares");
 const redis_1 = __importDefault(require("../config/redis"));
 exports.UserController = {
-    // GET /users/:id
+    // GET /users/:userId
     getUserProfile: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { userId } = req.params;
         // Check cached data
@@ -29,7 +29,7 @@ exports.UserController = {
         yield redis_1.default.set(`${userId}-profile`, JSON.stringify(user));
         res.status(200).json({ user });
     })),
-    // GET /users/:id/posts
+    // GET /users/:userId/posts
     getUserPosts: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { userId } = req.params;
         // Find user
@@ -50,7 +50,7 @@ exports.UserController = {
         yield redis_1.default.set(`${userId}-posts`, JSON.stringify(user));
         res.status(200).json({ posts });
     })),
-    // GET /users/:id/suggested-friends
+    // GET /users/:userId/suggested-friends
     getSuggestedFriends: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         var _a, _b;
         const { userId } = req.params;

@@ -30,6 +30,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const isExisted = yield models_1.UserModel.exists({ _id: verified['_id'] });
         if (!isExisted)
             throw new Error();
+        req.userId = verified['_id'];
         next();
     }
     catch (error) {

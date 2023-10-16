@@ -91,9 +91,7 @@ exports.FriendshipController = {
                 .send({ message: 'Friend request is not existed.' });
         if (friendship.status === 'accepted')
             return res.status(400).send({ message: 'Both of you were friend.' });
-        friendship = yield models_1.FriendshipModel.findByIdAndUpdate(friendship._id, {
-            status: 'accepted',
-        }, { new: true });
+        friendship = yield models_1.FriendshipModel.findByIdAndUpdate(friendship._id, { status: 'accepted' }, { new: true });
         // Reset related data on redis
         yield Promise.all([
             redis_1.default.del(`${userId}-friends`),

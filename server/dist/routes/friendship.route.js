@@ -5,7 +5,7 @@ const router = (0, express_1.Router)();
 const middlewares_1 = require("../middlewares");
 const controllers_1 = require("../controllers");
 const friendship_validator_1 = require("../validators/friendship.validator");
-// PATH: /friends
+// PATH: /friendships
 router.use(middlewares_1.verifyToken);
 router.get('/:userId', friendship_validator_1.getUserFriendsValidator, middlewares_1.errorHandler, controllers_1.FriendshipController.getUserFriends);
 router.get('/:userId/:friendId', friendship_validator_1.getFriendStatusValidator, middlewares_1.errorHandler, controllers_1.FriendshipController.getFriendStatus);

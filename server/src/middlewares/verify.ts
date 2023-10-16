@@ -1,9 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models';
 import { NextFunction, Request, Response } from 'express';
+import { VerifiedRequest } from '../types/request';
 
 export const verifyToken = async (
-  req: Request,
+  req: VerifiedRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -22,6 +23,8 @@ export const verifyToken = async (
 
     const isExisted = await UserModel.exists({ _id: verified['_id'] });
     if (!isExisted) throw new Error();
+
+    req.userId = verified['_id'];
 
     next();
   } catch (error) {

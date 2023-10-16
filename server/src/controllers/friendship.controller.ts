@@ -100,9 +100,7 @@ export const FriendshipController = {
 
     friendship = await FriendshipModel.findByIdAndUpdate(
       friendship._id,
-      {
-        status: 'accepted',
-      },
+      { status: 'accepted' },
       { new: true }
     );
 

@@ -15,7 +15,7 @@ const app = (0, express_1.default)();
 dotenv_1.default.config();
 app.use((0, helmet_1.default)());
 app.use(helmet_1.default.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-app.use((0, morgan_1.default)('common'));
+app.use((0, morgan_1.default)('dev'));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, cors_1.default)());

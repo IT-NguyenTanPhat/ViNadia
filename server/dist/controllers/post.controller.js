@@ -36,7 +36,7 @@ exports.PostController = {
             .lean();
         res.status(200).json({ posts });
     })),
-    // PATCH /posts/:id/like
+    // PATCH /posts/:postId/like
     likeOrDislikePost: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { postId } = req.params;
         const { userId } = req.body;

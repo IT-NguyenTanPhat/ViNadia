@@ -5,7 +5,7 @@ import { catchAsync } from '../middlewares';
 import redis from '../config/redis';
 
 export const UserController = {
-  // GET /users/:id
+  // GET /users/:userId
   getUserProfile: catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
 
@@ -19,7 +19,7 @@ export const UserController = {
     res.status(200).json({ user });
   }),
 
-  // GET /users/:id/posts
+  // GET /users/:userId/posts
   getUserPosts: catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
 
@@ -44,7 +44,7 @@ export const UserController = {
     res.status(200).json({ posts });
   }),
 
-  // GET /users/:id/suggested-friends
+  // GET /users/:userId/suggested-friends
   getSuggestedFriends: catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
 
