@@ -12,6 +12,7 @@ import ITheme from '../types/Theme';
 interface Props<T extends FormikValues> {
   onSubmit: (values: T, onSubmitProps: FormikHelpers<T>) => Promise<void>;
   initialValues: T;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   validationSchema?: any;
   fields: { label: string; name: string; colspan?: number; type?: string }[];
   submitButtonText?: string;
@@ -79,11 +80,13 @@ function GenericForm<T extends FormikValues>({ ...props }: Props<T>) {
               fullWidth
               type="submit"
               sx={{
-                m: '2rem 0',
+                my: '2rem',
                 p: '1rem',
                 backgroundColor: palette.primary.main,
                 color: palette.background.alt,
-                '&:hover': { color: palette.primary.main },
+                '&:hover': {
+                  color: palette.primary.main,
+                },
               }}
             >
               {props.submitButtonText ?? 'Submit'}

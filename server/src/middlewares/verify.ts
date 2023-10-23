@@ -21,10 +21,10 @@ export const verifyToken = async (
     );
     if (typeof verified === 'string') throw new Error();
 
-    const isExisted = await UserModel.exists({ _id: verified['_id'] });
+    const isExisted = await UserModel.exists({ _id: verified['userId'] });
     if (!isExisted) throw new Error();
 
-    req.userId = verified['_id'];
+    req.userId = verified['userId'];
 
     next();
   } catch (error) {

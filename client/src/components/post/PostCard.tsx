@@ -7,7 +7,7 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from '@mui/icons-material';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../state/store';
 import { WidgetWrapper, FlexBox } from '../Styled';
@@ -26,7 +26,7 @@ export default function PostCard(props: { post: IPost }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const sendLikeRequest = () => {
+  const sendLikeRequest = useCallback(() => {
     if (!user) return navigate('/auth/login');
     API.patch(`/posts/${_id}/like`, { userId: user._id })
       .then((response) => dispatch(updatePost({ post: response.data.post })))
@@ -35,7 +35,7 @@ export default function PostCard(props: { post: IPost }) {
           showToast({ type: 'warning', message: 'Failed. Please, try again!' })
         )
       );
-  };
+  }, [_id, dispatch, navigate, user]);
 
   return (
     <WidgetWrapper mb="2rem">

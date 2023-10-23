@@ -7,6 +7,7 @@ import ITheme from '../../types/Theme';
 import { setLogin } from './Auth.slice';
 import GenericForm from '../../components/GenericForm';
 import API from '../../config/api';
+import { useCallback } from 'react';
 
 interface Input {
   email: string;
@@ -14,8 +15,8 @@ interface Input {
 }
 
 const schema = object().shape({
-  email: string().email('Invalid email').required('Required'),
-  password: string().required('Required'),
+  email: string().email('Invalid email.').required('Email is required.'),
+  password: string().required('Password is required.'),
 });
 
 const initialValues: Input = { email: '', password: '' };
@@ -25,28 +26,28 @@ function LoginForm() {
   const navigate = useNavigate();
   const { palette }: ITheme = useTheme();
 
-  const handleSubmit = async (
-    values: Input,
-    onSubmitProps: FormikHelpers<Input>
-  ) => {
-    API.post('/auth/login', values)
-      .then((response) => {
-        const { user, accessToken, refreshToken } = response.data;
-        onSubmitProps.resetForm();
+  const handleSubmit = useCallback(
+    async (values: Input, onSubmitProps: FormikHelpers<Input>) => {
+      API.post('/auth/login', values)
+        .then((response) => {
+          const { user, accessToken, refreshToken } = response.data;
+          onSubmitProps.resetForm();
 
-        // Save token
-        localStorage.setItem('token', accessToken);
-        document.cookie = `refresh_token=${refreshToken};max-age=2592000`;
+          // Save token
+          localStorage.setItem('token', accessToken);
+          document.cookie = `refresh_token=${refreshToken};max-age=2592000`;
 
-        dispatch(setLogin({ user }));
-        navigate('/');
-      })
-      .catch((err) => {
-        const { message } = err.response ? err.response.data : err;
-        onSubmitProps.setStatus({ error: message });
-      });
-  };
-  
+          dispatch(setLogin({ user }));
+          navigate('/');
+        })
+        .catch((err) => {
+          const { message } = err.response ? err.response.data : err;
+          onSubmitProps.setStatus({ error: message });
+        });
+    },
+    [dispatch, navigate]
+  );
+
   return (
     <>
       <GenericForm
@@ -60,9 +61,7 @@ function LoginForm() {
         submitButtonText="Login"
       />
       <Typography
-        onClick={() => {
-          navigate('/auth/register');
-        }}
+        onClick={() => navigate('/auth/register')}
         width={'fit-content'}
         sx={{
           textDecoration: 'underline',

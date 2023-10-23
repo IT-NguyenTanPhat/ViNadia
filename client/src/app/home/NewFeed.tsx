@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../state/store';
 import { setPosts } from '../App.slice';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { showToast } from '../toast/Toast.slice';
 import PostCard from '../../components/post/PostCard';
 import { Avatar, Box, Skeleton } from '@mui/material';
@@ -13,7 +13,7 @@ export default function NewFeed() {
   const posts = useSelector((state: RootState) => state.AppReducer.feedPosts);
   const [loading, setLoading] = useState(false);
 
-  const getFeedPosts = () => {
+  const getFeedPosts = useCallback(() => {
     setLoading(true);
     API.get(`/posts/feed`)
       .then((response) => {
@@ -21,13 +21,13 @@ export default function NewFeed() {
         setLoading(false);
       })
       .catch(() => dispatch(showToast({ message: 'Something went wrong!' })));
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     if (posts.length === 0) {
       getFeedPosts();
     }
-  }, []);
+  }, [getFeedPosts, posts.length]);
 
   return (
     <>

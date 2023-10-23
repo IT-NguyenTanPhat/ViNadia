@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { FlexBox, WidgetWrapper } from '../../components/Styled';
 import ITheme from '../../types/Theme';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { IUserHeader } from '../../types/User';
 import UserHeader from '../../components/UserHeader';
 import { useSelector } from 'react-redux';
@@ -14,17 +14,17 @@ export default function SuggestedFriendsWidget() {
   const [friends, setFriends] = useState<IUserHeader[]>([]);
   const { user } = useSelector((state: RootState) => state.AuthReducer);
 
-  const getSuggestedFriends = () => {
+  const getSuggestedFriends = useCallback(() => {
     API.get(`/users/${user?._id}/suggested-friends`).then((response) =>
       setFriends(response.data.friends)
     );
-  };
+  }, [user?._id]);
 
   useEffect(() => {
     if (user) {
       getSuggestedFriends();
     }
-  }, []);
+  }, [getSuggestedFriends, user]);
 
   if (friends.length == 0 || !user) return null;
 

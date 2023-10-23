@@ -11,7 +11,7 @@ import {
   MenuItem,
   useTheme,
 } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FlexBox } from '../Styled';
 import UserHeader from '../UserHeader';
 import { useSelector } from 'react-redux';
@@ -30,7 +30,7 @@ export default function PostHeader(props: { postId: string; author: IUser }) {
     'requested' | 'not' | 'accepted'
   >('not');
 
-  const getFriendStatus = () => {
+  const getFriendStatus = useCallback(() => {
     if (!user) {
       setFriendStatus('not');
     } else if (user._id === author._id) {
@@ -40,7 +40,7 @@ export default function PostHeader(props: { postId: string; author: IUser }) {
         setFriendStatus(response.data.status)
       );
     }
-  };
+  }, [author._id, user]);
 
   const sendFriendRequest = () => {
     if (!user) return navigate('/auth/login');

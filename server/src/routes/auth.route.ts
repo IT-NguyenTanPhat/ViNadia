@@ -13,6 +13,8 @@ const router = Router();
 
 router.post('/login', loginValidator, errorHandler, AuthController.login);
 
+router.get('/google', AuthController.google);
+
 router.post(
   '/register',
   upload.single('avatar'),

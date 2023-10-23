@@ -9,6 +9,7 @@ import { RootState } from '../../state/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeToast } from './Toast.slice';
 import { Close } from '@mui/icons-material';
+import { useCallback } from 'react';
 
 export default function Toast() {
   const { isOpen, message, title, duration, type, position } = useSelector(
@@ -16,9 +17,9 @@ export default function Toast() {
   );
   const dispatch = useDispatch();
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     dispatch(closeToast());
-  };
+  }, [dispatch]);
 
   return (
     <Snackbar

@@ -7,6 +7,7 @@ import ITheme from '../../types/Theme';
 import GenericForm from '../../components/GenericForm';
 import { showToast } from '../toast/Toast.slice';
 import API from '../../config/api';
+import { useCallback } from 'react';
 
 interface Input {
   name: string;
@@ -36,27 +37,27 @@ function RegisterForm() {
   const navigate = useNavigate();
   const { palette }: ITheme = useTheme();
 
-  const handleSubmit = async (
-    values: Input,
-    onSubmitProps: FormikHelpers<Input>
-  ) => {
-    API.post(`/auth/register`, values)
-      .then(() => {
-        onSubmitProps.resetForm();
-        dispatch(
-          showToast({
-            title: 'Success',
-            message: 'You can login right now!',
-            type: 'success',
-          })
-        );
-        navigate('/auth/login');
-      })
-      .catch((err) => {
-        const { message } = err.response ? err.response.data : err;
-        onSubmitProps.setStatus({ error: message });
-      });
-  };
+  const handleSubmit = useCallback(
+    async (values: Input, onSubmitProps: FormikHelpers<Input>) => {
+      API.post(`/auth/register`, values)
+        .then(() => {
+          onSubmitProps.resetForm();
+          dispatch(
+            showToast({
+              title: 'Success',
+              message: 'You can login right now!',
+              type: 'success',
+            })
+          );
+          navigate('/auth/login');
+        })
+        .catch((err) => {
+          const { message } = err.response ? err.response.data : err;
+          onSubmitProps.setStatus({ error: message });
+        });
+    },
+    [dispatch, navigate]
+  );
 
   return (
     <>

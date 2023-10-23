@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Navbar from '../../components/Navbar';
 import UserWidget from '../widgets/UserWidget';
 import { useMediaQuery, Box, Avatar, Skeleton } from '@mui/material';
@@ -25,7 +25,7 @@ export default function ProfilePage() {
   );
   const [loading, setLoading] = useState(false);
 
-  const getUserProfile = async () => {
+  const getUserProfile = useCallback(async () => {
     setLoading(true);
     try {
       const [response1, response2] = await Promise.all([
@@ -39,13 +39,13 @@ export default function ProfilePage() {
     } catch (error) {
       dispatch(showToast({ message: 'Something went wrong' }));
     }
-  };
+  }, [dispatch, userId]);
 
   useEffect(() => {
     if (!user || !posts) {
       getUserProfile();
     }
-  }, [user, posts]);
+  }, [user, posts, getUserProfile]);
 
   if (!user && !loading) return <NotFoundPage />;
 
