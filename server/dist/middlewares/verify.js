@@ -27,10 +27,10 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         const verified = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET || 'vinadia_access_token');
         if (typeof verified === 'string')
             throw new Error();
-        const isExisted = yield models_1.UserModel.exists({ _id: verified['_id'] });
+        const isExisted = yield models_1.UserModel.exists({ _id: verified['userId'] });
         if (!isExisted)
             throw new Error();
-        req.userId = verified['_id'];
+        req.userId = verified['userId'];
         next();
     }
     catch (error) {

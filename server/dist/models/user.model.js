@@ -18,7 +18,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
     avatar: { type: String, default: '' },
     location: String,
     occupation: String,
@@ -27,7 +27,9 @@ const UserSchema = new mongoose_1.Schema({
 });
 UserSchema.pre('save', function (next) {
     return __awaiter(this, void 0, void 0, function* () {
-        this.password = yield bcryptjs_1.default.hash(this.password, 12);
+        if (this.password) {
+            this.password = yield bcryptjs_1.default.hash(this.password, 12);
+        }
         next();
     });
 });

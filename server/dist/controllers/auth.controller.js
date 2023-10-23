@@ -28,9 +28,15 @@ const models_1 = require("../models");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const middlewares_1 = require("../middlewares");
-function generateAccessToken(payload) {
-    const accessToken = jsonwebtoken_1.default.sign(payload, process.env.JWT_SECRET || 'vinadia_access_token', { expiresIn: '8h' });
+const axios_1 = __importDefault(require("axios"));
+const google_1 = require("../config/google");
+function generateAccessToken(userId) {
+    const accessToken = jsonwebtoken_1.default.sign({ userId }, process.env.JWT_SECRET || 'vinadia_access_token', { expiresIn: '8h' });
     return accessToken;
+}
+function generateRefreshToken(userId) {
+    const refreshToken = jsonwebtoken_1.default.sign({ userId }, process.env.JWT_SECRET || 'vinadia_refresh_token', { expiresIn: '7d' });
+    return refreshToken;
 }
 exports.AuthController = {
     // POST /auth/login
@@ -38,21 +44,38 @@ exports.AuthController = {
         const { email, password } = req.body;
         // Find user
         const userWithPassword = yield models_1.UserModel.findOne({ email }, '-__v -createdAt -updatedAt');
-        if (!userWithPassword)
+        if (!userWithPassword || !userWithPassword.password)
             return res.status(400).json({ message: 'Invalid email or password.' });
         // Compare password
         const isPasswordMatched = yield bcryptjs_1.default.compare(password, userWithPassword.password);
         if (!isPasswordMatched)
             return res.status(400).json({ message: 'Invalid email or password.' });
         // Generate tokens
-        const accessToken = generateAccessToken({
-            _id: userWithPassword._id,
-        });
-        const refreshToken = jsonwebtoken_1.default.sign({ _id: userWithPassword._id }, process.env.JWT_SECRET || 'vinadia_refresh_token', { expiresIn: '30d' });
+        const accessToken = generateAccessToken(userWithPassword._id.toString());
+        const refreshToken = generateRefreshToken(userWithPassword._id.toString());
         const _a = userWithPassword.toObject(), { password: del } = _a, userWithoutPassword = __rest(_a, ["password"]); // Remove password
         res
             .status(200)
             .json({ user: userWithoutPassword, accessToken, refreshToken });
+    })),
+    // GET /auth/google
+    google: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const code = req.query.code;
+        const googleRes = yield google_1.ggClient.getToken(code);
+        google_1.ggClient.setCredentials(googleRes.tokens);
+        const userRes = yield axios_1.default.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json`, { headers: { Authorization: 'Bearer ' + googleRes.tokens.access_token } });
+        let user = yield models_1.UserModel.findOne({ email: userRes.data.email });
+        if (!user) {
+            user = yield models_1.UserModel.create({
+                name: userRes.data.name,
+                email: userRes.data.email,
+                avatar: userRes.data.picture,
+            });
+        }
+        // Generate tokens
+        const accessToken = generateAccessToken(user._id.toString());
+        const refreshToken = generateRefreshToken(user._id.toString());
+        res.status(200).json({ user, accessToken, refreshToken });
     })),
     // POST /auth/register
     register: (0, middlewares_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -73,7 +96,7 @@ exports.AuthController = {
         const verified = jsonwebtoken_1.default.verify(refresh_token, process.env.JWT_SECRET || 'vinadia_refresh_token');
         if (typeof verified === 'string')
             return res.status(403).json({ message: 'Invalid token' });
-        const accessToken = generateAccessToken({ _id: verified._id });
+        const accessToken = generateAccessToken(verified.userId);
         res.status(200).json({ token: accessToken });
     })),
 };
